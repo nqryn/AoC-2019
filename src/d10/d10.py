@@ -61,26 +61,27 @@ def solve():
 				ast_map[i][j] = asteroid
 				asteroids.append(asteroid)
 
-	# for i in range(map_size):
-	# 	for j in range(map_size):
-	# 		if not ast_map[i][j]:
-	# 			print(' ___ ', end='')
-	# 		else:
-	# 			print(f' {ast_map[i][j].count_seen(ast_map, asteroids)} ', end='')
-	# 	print()
+	for i in range(map_size):
+		for j in range(map_size):
+			if not ast_map[i][j]:
+				print(' ___ ', end='')
+			else:
+				print(f' {ast_map[i][j].count_seen(ast_map, asteroids)} ', end='')
+		print()
 	
 	max_seen = 0
+	max_location = 0
 	print(f'There are {len(asteroids)} astroids')
-	conn = 0
 	for a in asteroids:
 		sees = a.count_seen(ast_map[:], asteroids)
-		conn += sees
-		max_seen = max(max_seen, sees)
+		if sees > max_seen:
+			max_seen = sees
+			max_location = (a.i, a.j)
 
-	print(f'Stuff seen {conn}')
-	return max_seen
+	return max_seen, max_location
 
 
 if __name__ == '__main__':
-	best_location = solve()
-	print(f' - How many other asteroids can be detected from the best location?\n - {best_location}')
+	best_seen, best_location = solve()
+	print(f' - How many other asteroids can be detected from the best location?\n - {best_seen}\n')
+	print(f' - From where?\n - {best_location}')
