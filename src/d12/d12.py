@@ -14,6 +14,9 @@ class Point3D:
 			self.z + other.z
 		)
 
+	def __eq__(self, other):
+		return self.x == other.x and self.y == other.y and self.z == other.z
+
 	def __str__(self):
 		return f'<x={self.x:3}, y={self.y:3}, z={self.z:3}>'
 
@@ -23,6 +26,9 @@ class Moon:
 		self.name = '🌑 ' + name + ' 🌑'
 		self.position = Point3D(*init_pos)
 		self.velocity = Point3D(0, 0, 0)
+
+		self.init_pos = self.position
+		self.init_vel = self.velocity
 
 	def prepare_update(self, others):
 		# Prepare to update the velocity based on the other moons
@@ -65,22 +71,22 @@ def solve():
 	moons = []
 	regex = r'^<x=(?P<x>-?\d+), y=(?P<y>-?\d+), z=(?P<z>-?\d+)>$'
 
-	with open('sample.in', 'r') as fin:
+	with open('d12.in', 'r') as fin:
 		for name in names:
 			line = fin.readline()
 			matches = re.search(regex, line)
 			position = (int(matches.group('x')), int(matches.group('y')), int(matches.group('z')))
 			moons.append(Moon(name, position))
-
-	_debug_print(0, moons)
-	for _ in range(4686774924):
+	
+	for _ in range(10**9):
 		for i, m in enumerate(moons):
 			m.prepare_update(moons[:i] + moons[i+1:])
 
 		for m in moons:
 			m.step()
 
-	_debug_print(4686774924, moons)
+			if m.velocity == m.init_vel and m.position == m.init_pos:
+				print(f'{m.name} has returned to its initial state at step {_}')
 
 	# # Compute the energy
 	# energy = 0
@@ -90,6 +96,7 @@ def solve():
 	# 	energy += pot * kin
 
 	# print(f'Total energy {energy}')
+	print('.')
 
 if __name__ == '__main__':
 	solve()
